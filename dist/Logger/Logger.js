@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Logger {
-    constructor(debugEnabled = false) {
+    constructor(isDebug) {
         this.debugEnabled = false;
-        this.debugEnabled = debugEnabled;
+        this.debugEnabled = isDebug;
     }
     debug(message, message2) {
         if (this.debugEnabled) {

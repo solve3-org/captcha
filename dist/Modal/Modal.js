@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Logger_1 = __importDefault(require("../Logger/Logger"));
 const handler_1 = require("./handler");
 const styling_1 = require("./styling");
+// @ts-ignore
 const id = (text) => {
     return `s3-solve3-modal-${text}`;
 };
@@ -41,22 +42,24 @@ class Modal {
             }
         });
     }
-    create() {
+    create(signedCaptcha) {
         // Styling variables
         // Create outer modal div
         const modalDiv = document.createElement("div");
         Object.assign(modalDiv.style, styling_1.centered, styling_1.outerDivStyle, styling_1.maxSize, styling_1.boxShadow);
         // Append elements to modal div
-        modalDiv.appendChild(modalBody());
-        modalDiv.appendChild(control());
+        modalDiv.appendChild(modalBody(signedCaptcha));
+        // modalDiv.appendChild(control());
         modalDiv.appendChild(brandContainer());
         if (!this.modal) {
             throw new Error("Modal element not found");
         }
         this.modal.innerHTML = modalDiv.outerHTML;
+        handleSegmentImage(signedCaptcha);
     }
 }
 exports.default = Modal;
+// ==========================
 const brandContainer = () => {
     // Create header with brand logo and name
     const brandContainerDiv = document.createElement("div");
@@ -84,19 +87,89 @@ const brandContainer = () => {
     brandContainerDiv.appendChild(brandName);
     return brandContainerDiv;
 };
-const modalBody = () => {
-    // const innerDiv = document.createElement("div");
-    // innerDiv.className = "s3-solve3-module-inner";
-    // Object.assign(innerDiv.style, innerDivStyle, boxShadow);
-    // create wrapper div
-    // create inner div
+const modalBody = (signedCaptcha) => {
     const innerWrapperDiv = document.createElement("div");
+    innerWrapperDiv.id = id("captcha-wrapper");
     Object.assign(innerWrapperDiv.style, styling_1.innerWrapperDivStyle);
     const innerDiv = document.createElement("div");
-    innerDiv.id = id("inner");
+    innerDiv.id = id("captcha-inner");
     Object.assign(innerDiv.style, styling_1.innerDivStyle, styling_1.boxShadowBold);
+    // Apply the Base64 image as the background of innerDiv
+    innerDiv.style.backgroundImage = `url(${signedCaptcha.image})`;
+    innerDiv.style.backgroundSize = "cover"; // To fit and cover the content
+    innerDiv.style.backgroundPosition = "center"; // Center the background
+    // Create an img element for the signedCaptcha.segment
+    // const imgElement = document.createElement("img");
+    // Object.assign(imgElement.style, segmentImageStyle, pointer);
+    // imgElement.src = signedCaptcha.segment; // Set the src attribute to the image URL
+    // imgElement.draggable = true;
+    // innerDiv.appendChild(imgElement); // Append the img element to innerDiv
     innerWrapperDiv.appendChild(innerDiv);
     return innerWrapperDiv;
+};
+const handleSegmentImage = (signedCaptcha) => {
+    const captcha = document.getElementById(`${id("captcha-inner")}`);
+    if (captcha) {
+        const width = captcha.offsetWidth;
+        const img = new Image();
+        img.src = signedCaptcha.image;
+        img.onload = () => {
+            const imgWidth = img.width;
+            const scale = (width / imgWidth) * 100;
+            const segmentImg = new Image();
+            segmentImg.src = signedCaptcha.segment;
+            segmentImg.onload = () => {
+                const segmentImgWidth = segmentImg.width;
+                const segmentScaledWidth = (segmentImgWidth * scale) / 100;
+                const segmentImgHeight = segmentImg.height;
+                const segmentScaledHeight = (segmentImgHeight * scale) / 100;
+                const imgElement = createImageElement(segmentScaledWidth, segmentScaledHeight, signedCaptcha.segment);
+                captcha.appendChild(imgElement); // Append the img element to innerDiv
+                // Make the imgElement draggable
+                imgElement.draggable = true;
+                // Set up drag-and-drop events
+                setupDragAndDrop(imgElement, captcha);
+            };
+        };
+    }
+};
+const createImageElement = (width, height, src) => {
+    const imgElement = document.createElement("img");
+    Object.assign(imgElement.style, styling_1.segmentImageStyle, styling_1.pointer);
+    imgElement.id = id("segmentImage");
+    imgElement.src = src;
+    imgElement.style.width = `${width - 2}px`;
+    imgElement.style.height = `${height - 2}px`;
+    return imgElement;
+};
+const setupDragAndDrop = (imgElement, captcha) => {
+    let initialX = 0;
+    let initialY = 0;
+    let previousX = 0;
+    let previousY = 0;
+    imgElement.addEventListener("dragstart", (event) => {
+        if (event.dataTransfer) {
+            initialX = event.clientX - imgElement.getBoundingClientRect().left;
+            initialY = event.clientY - imgElement.getBoundingClientRect().top;
+            console.log("Drag started");
+        }
+    });
+    let offsetX = 0;
+    let offsetY = 0;
+    imgElement.addEventListener("drag", (event) => {
+        previousX = offsetX;
+        previousY = offsetY;
+        offsetX = event.clientX - initialX - captcha.getBoundingClientRect().left;
+        offsetY = event.clientY - initialY - captcha.getBoundingClientRect().top;
+        imgElement.style.left = `${offsetX}px`;
+        imgElement.style.top = `${offsetY}px`;
+        console.log("Dragging at position: ", offsetX, offsetY);
+    });
+    imgElement.addEventListener("dragend", () => {
+        imgElement.style.left = `${previousX}px`;
+        imgElement.style.top = `${previousY}px`;
+        console.log("Drag ended with position: x =", previousX, "y =", previousY);
+    });
 };
 const control = () => {
     const changeColor = document.createElement("button");

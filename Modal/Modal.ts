@@ -84,7 +84,7 @@ export default class Modal {
 
     this.modal!.innerHTML = modalDiv.outerHTML;
 
-    createSegmentImage(signedCaptcha);
+    handleSegmentImage(signedCaptcha);
   }
 }
 
@@ -136,10 +136,11 @@ const brandContainer = (): HTMLElement => {
 
 const modalBody = (signedCaptcha: SignedCaptcha): HTMLElement => {
   const innerWrapperDiv = document.createElement("div");
+  innerWrapperDiv.id = id("captcha-wrapper");
   Object.assign(innerWrapperDiv.style, innerWrapperDivStyle);
 
   const innerDiv = document.createElement("div");
-  innerDiv.id = id("captcha");
+  innerDiv.id = id("captcha-inner");
   Object.assign(innerDiv.style, innerDivStyle, boxShadowBold);
 
   // Apply the Base64 image as the background of innerDiv
@@ -151,6 +152,7 @@ const modalBody = (signedCaptcha: SignedCaptcha): HTMLElement => {
   // const imgElement = document.createElement("img");
   // Object.assign(imgElement.style, segmentImageStyle, pointer);
   // imgElement.src = signedCaptcha.segment; // Set the src attribute to the image URL
+  // imgElement.draggable = true;
 
   // innerDiv.appendChild(imgElement); // Append the img element to innerDiv
   innerWrapperDiv.appendChild(innerDiv);
@@ -158,35 +160,98 @@ const modalBody = (signedCaptcha: SignedCaptcha): HTMLElement => {
   return innerWrapperDiv;
 };
 
-const createSegmentImage = (signedCaptcha: SignedCaptcha): void => {
-  const captcha = document.getElementById(`${id("captcha")}`)!;
+const handleSegmentImage = (signedCaptcha: SignedCaptcha): void => {
+  const captcha = document.getElementById(`${id("captcha-inner")}`);
   if (captcha) {
     const width = captcha.offsetWidth;
 
     const img = new Image();
     img.src = signedCaptcha.image;
-    const imgWidth = img.width;
-    const scale = (width / imgWidth);
+    img.onload = () => {
+      const imgWidth = img.width;
+      const scale = (width / imgWidth) * 100;
 
-    const segmentImg = new Image();
-    segmentImg.src = signedCaptcha.segment;
-    const segmentImgWidth = segmentImg.width;
-    const segmentScaledWidth = segmentImgWidth * scale;
+      const segmentImg = new Image();
+      segmentImg.src = signedCaptcha.segment;
+      segmentImg.onload = () => {
+        const segmentImgWidth = segmentImg.width;
+        const segmentScaledWidth = (segmentImgWidth * scale) / 100;
 
-    const segmentImgHeight = segmentImg.height;
-    const segmentScaledHeight = segmentImgHeight * scale;
+        const segmentImgHeight = segmentImg.height;
+        const segmentScaledHeight = (segmentImgHeight * scale) / 100;
 
+        const imgElement = createImageElement(
+          segmentScaledWidth,
+          segmentScaledHeight,
+          signedCaptcha.segment,
+        );
+        captcha.appendChild(imgElement); // Append the img element to innerDiv
 
-    // append child to captcha element
-    const imgElement = document.createElement("img");
-    Object.assign(imgElement.style, segmentImageStyle, pointer);
-    imgElement.id = id("segmentImage");
-    imgElement.src = signedCaptcha.segment; // Set the src attribute to the image URL
-    imgElement.style.width = `${segmentScaledWidth}px`;
-    imgElement.style.height = `${segmentScaledHeight}px`;
+        // Make the imgElement draggable
+        imgElement.draggable = true;
 
-    captcha.appendChild(imgElement); // Append the img element to innerDiv
+        // Set up drag-and-drop events
+        setupDragAndDrop(imgElement, captcha);
+      };
+    };
   }
+};
+
+const createImageElement = (
+  width: number,
+  height: number,
+  src: string,
+): HTMLImageElement => {
+  const imgElement = document.createElement("img");
+  Object.assign(imgElement.style, segmentImageStyle, pointer);
+  imgElement.id = id("segmentImage");
+  imgElement.src = src;
+  imgElement.style.width = `${width - 2}px`;
+  imgElement.style.height = `${height - 2}px`;
+
+  return imgElement;
+};
+
+const setupDragAndDrop = (
+  imgElement: HTMLImageElement,
+  captcha: HTMLElement,
+) => {
+  let initialX = 0;
+  let initialY = 0;
+
+  let previousX = 0;
+  let previousY = 0;
+
+  imgElement.addEventListener("dragstart", (event) => {
+    if (event.dataTransfer) {
+      initialX = event.clientX - imgElement.getBoundingClientRect().left;
+      initialY = event.clientY - imgElement.getBoundingClientRect().top;
+      console.log("Drag started");
+    }
+  });
+
+  let offsetX = 0;
+  let offsetY = 0;
+
+  imgElement.addEventListener("drag", (event) => {
+    previousX = offsetX;
+    previousY = offsetY;
+
+    offsetX = event.clientX - initialX - captcha.getBoundingClientRect().left;
+    offsetY = event.clientY - initialY - captcha.getBoundingClientRect().top;
+
+    imgElement.style.left = `${offsetX}px`;
+    imgElement.style.top = `${offsetY}px`;
+
+    console.log("Dragging at position: ", offsetX, offsetY);
+  });
+
+  imgElement.addEventListener("dragend", () => {
+    imgElement.style.left = `${previousX}px`;
+    imgElement.style.top = `${previousY}px`;
+
+    console.log("Drag ended with position: x =", previousX, "y =", previousY);
+  });
 };
 
 const control = (): HTMLElement => {

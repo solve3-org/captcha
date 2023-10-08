@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pointer = exports.innerDivStyle = exports.innerWrapperDivStyle = exports.closeButtonStyle = exports.brandContainerStyle = exports.brandNameSecondLine = exports.brandNameFirstLine = exports.brandNameWrapper = exports.brandLogoSize = exports.padding5 = exports.flexCenter = exports.boxShadowBold = exports.boxShadow = exports.outerDivStyle = exports.centered = exports.maxSize = void 0;
+exports.segmentImageStyle = exports.pointer = exports.innerDivStyle = exports.innerWrapperDivStyle = exports.closeButtonStyle = exports.brandContainerStyle = exports.brandNameSecondLine = exports.brandNameFirstLine = exports.brandNameWrapper = exports.brandLogoSize = exports.padding5 = exports.flexCenter = exports.boxShadowBold = exports.boxShadow = exports.outerDivStyle = exports.centered = exports.maxSize = void 0;
 const maxSize = {
     width: "350px",
     height: "450px",
@@ -121,5 +121,13 @@ const innerDivStyle = {
     boxSizing: "border-box",
     background: "lightgrey",
     borderRadius: "5px",
+    position: "relative",
 };
 exports.innerDivStyle = innerDivStyle;
+const segmentImageStyle = {
+    border: "1px solid rgb(255,255,255,0.6)",
+    position: "absolute",
+    bottom: "5px",
+    left: "5px",
+};
+exports.segmentImageStyle = segmentImageStyle;
