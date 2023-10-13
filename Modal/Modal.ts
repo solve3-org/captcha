@@ -160,8 +160,9 @@ const modalBody = (signedCaptcha: SignedCaptcha): HTMLElement => {
   return innerWrapperDiv;
 };
 
-const handleSegmentImage = (signedCaptcha: SignedCaptcha): void => {
+const handleSegmentImage = (signedCaptcha: SignedCaptcha): number => {
   const captcha = document.getElementById(`${id("captcha-inner")}`);
+  let scale = 100;
   if (captcha) {
     const width = captcha.offsetWidth;
 
@@ -169,7 +170,7 @@ const handleSegmentImage = (signedCaptcha: SignedCaptcha): void => {
     img.src = signedCaptcha.image;
     img.onload = () => {
       const imgWidth = img.width;
-      const scale = (width / imgWidth) * 100;
+      scale = (width / imgWidth) * 100;
 
       const segmentImg = new Image();
       segmentImg.src = signedCaptcha.segment;
@@ -191,7 +192,7 @@ const handleSegmentImage = (signedCaptcha: SignedCaptcha): void => {
         imgElement.draggable = true;
 
         // Set up drag-and-drop events
-        setupDragAndDrop(imgElement, captcha);
+        setupDragAndDrop(scale, imgElement, captcha);
       };
     };
   }
@@ -213,9 +214,12 @@ const createImageElement = (
 };
 
 const setupDragAndDrop = (
+  scalingFactor: number,
   imgElement: HTMLImageElement,
   captcha: HTMLElement,
 ) => {
+  const captchaInner = document.getElementById(`${id("captcha-inner")}`);
+
   let initialX = 0;
   let initialY = 0;
 
@@ -250,7 +254,19 @@ const setupDragAndDrop = (
     imgElement.style.left = `${previousX}px`;
     imgElement.style.top = `${previousY}px`;
 
-    console.log("Drag ended with position: x =", previousX, "y =", previousY);
+    if (captchaInner) {
+      const imgRect = imgElement.getBoundingClientRect();
+      const captchaRect = captchaInner.getBoundingClientRect();
+
+      const leftDistance = imgRect.left - captchaRect.left;
+      const topDistance = imgRect.top - captchaRect.top;
+
+      const posX = (leftDistance * 100) / scalingFactor;
+      const posY = (topDistance * 100) / scalingFactor;
+
+      console.log("Distance from left of captcha-inner: (X) ", posX);
+      console.log("Distance from top of captcha-inner: (Y) ", posY);
+    }
   });
 };
 

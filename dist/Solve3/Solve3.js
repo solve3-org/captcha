@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -13,29 +22,30 @@ class Solve3 extends events_1.EventEmitter {
         this.logger = new Logger_1.default(true);
         this.modal = new Modal_1.default();
     }
-    open(HandshakeResult) {
-        if (!this._handshakeIn) {
-            throw new Error("Solve3 not initialized");
-        }
-        if (!HandshakeResult) {
-            throw new Error("HandshakeResult not found");
-        }
-        this.logger.debug("open");
-        const signedCaptcha = (0, api_1.requestCaptcha)(HandshakeResult);
-        this.modal.create(signedCaptcha);
-    }
     // return value needs to be signed
     init(handshakeIn) {
-        this._handshakeIn = handshakeIn;
-        // check if account and destination are valid addresses
-        const handshakeResult = {
-            account: handshakeIn.account,
-            network: handshakeIn.network,
-            destination: handshakeIn.destination,
-            timestamp: Date.now(),
-            signature: "SIGNATURE",
-        };
-        return handshakeResult;
+        return __awaiter(this, void 0, void 0, function* () {
+            this._handshakeIn = handshakeIn;
+            // check if account and destination are valid addresses
+            const handshakeResult = yield (0, api_1.handshake)(handshakeIn);
+            this._handshakeResult = handshakeResult;
+            return handshakeResult.message;
+        });
+    }
+    open(signature) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this._handshakeIn) {
+                throw new Error("Solve3 not initialized");
+            }
+            const handshakeResult = Object.assign(Object.assign({}, this._handshakeIn), { timestamp: (_a = this._handshakeResult) === null || _a === void 0 ? void 0 : _a.timestamp, signature: signature });
+            // if (!HandshakeResult) {
+            //   throw new Error("HandshakeResult not found");
+            // }
+            this.logger.debug("open");
+            const signedCaptcha = yield (0, api_1.requestCaptcha)(handshakeResult);
+            this.modal.create(signedCaptcha);
+        });
     }
 }
 exports.default = Solve3;

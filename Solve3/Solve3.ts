@@ -1,50 +1,58 @@
 import { EventEmitter } from "events";
 import Logger from "../Logger/Logger";
 import Modal from "../Modal/Modal";
-import { HandshakeIn, HandshakeResult, SignedCaptcha } from "../types";
-import { requestCaptcha } from "../Modal/api/api";
+import {
+  HandshakeIn,
+  HandshakeResult,
+  HandshakeResultWithMessage,
+  SignedCaptcha,
+} from "../types";
+import { handshake, requestCaptcha } from "../Modal/api/api";
 
 export default class Solve3 extends EventEmitter {
   logger: Logger = new Logger(true);
   modal: Modal = new Modal();
 
   private _handshakeIn: HandshakeIn | undefined;
+  private _handshakeResult: HandshakeResultWithMessage | undefined;
 
   constructor() {
     super();
   }
 
-
-  public open(HandshakeResult: HandshakeResult | undefined) {
-    if(!this._handshakeIn) {
-      throw new Error("Solve3 not initialized");
-    }
-
-    if(!HandshakeResult) {
-      throw new Error("HandshakeResult not found");
-    }
-
-    this.logger.debug("open");
-    
-    const signedCaptcha: SignedCaptcha = requestCaptcha(HandshakeResult);
-
-    this.modal.create(signedCaptcha);
-  }
-
   // return value needs to be signed
-  public init(handshakeIn: HandshakeIn): HandshakeResult {
+  public async init(handshakeIn: HandshakeIn): Promise<string> {
     this._handshakeIn = handshakeIn;
 
     // check if account and destination are valid addresses
+    const handshakeResult: HandshakeResultWithMessage = await handshake(
+      handshakeIn,
+    );
+
+    this._handshakeResult = handshakeResult;
+    return handshakeResult.message;
+  }
+
+  public async open(signature: string) {
+    if (!this._handshakeIn) {
+      throw new Error("Solve3 not initialized");
+    }
+
     const handshakeResult: HandshakeResult = {
-      account: handshakeIn.account,
-      network: handshakeIn.network,
-      destination: handshakeIn.destination,
-      timestamp: Date.now(),
-      signature: "SIGNATURE",
+      ...this._handshakeIn,
+      timestamp: this._handshakeResult?.timestamp as number,
+      signature: signature,
     };
 
-    return handshakeResult;
+    // if (!HandshakeResult) {
+    //   throw new Error("HandshakeResult not found");
+    // }
+
+    this.logger.debug("open");
+
+    const signedCaptcha: SignedCaptcha = await requestCaptcha(handshakeResult);
+
+    this.modal.create(signedCaptcha);
   }
 }
 

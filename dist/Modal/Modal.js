@@ -109,13 +109,14 @@ const modalBody = (signedCaptcha) => {
 };
 const handleSegmentImage = (signedCaptcha) => {
     const captcha = document.getElementById(`${id("captcha-inner")}`);
+    let scale = 100;
     if (captcha) {
         const width = captcha.offsetWidth;
         const img = new Image();
         img.src = signedCaptcha.image;
         img.onload = () => {
             const imgWidth = img.width;
-            const scale = (width / imgWidth) * 100;
+            scale = (width / imgWidth) * 100;
             const segmentImg = new Image();
             segmentImg.src = signedCaptcha.segment;
             segmentImg.onload = () => {
@@ -128,7 +129,7 @@ const handleSegmentImage = (signedCaptcha) => {
                 // Make the imgElement draggable
                 imgElement.draggable = true;
                 // Set up drag-and-drop events
-                setupDragAndDrop(imgElement, captcha);
+                setupDragAndDrop(scale, imgElement, captcha);
             };
         };
     }
@@ -142,7 +143,8 @@ const createImageElement = (width, height, src) => {
     imgElement.style.height = `${height - 2}px`;
     return imgElement;
 };
-const setupDragAndDrop = (imgElement, captcha) => {
+const setupDragAndDrop = (scalingFactor, imgElement, captcha) => {
+    const captchaInner = document.getElementById(`${id("captcha-inner")}`);
     let initialX = 0;
     let initialY = 0;
     let previousX = 0;
@@ -168,7 +170,16 @@ const setupDragAndDrop = (imgElement, captcha) => {
     imgElement.addEventListener("dragend", () => {
         imgElement.style.left = `${previousX}px`;
         imgElement.style.top = `${previousY}px`;
-        console.log("Drag ended with position: x =", previousX, "y =", previousY);
+        if (captchaInner) {
+            const imgRect = imgElement.getBoundingClientRect();
+            const captchaRect = captchaInner.getBoundingClientRect();
+            const leftDistance = imgRect.left - captchaRect.left;
+            const topDistance = imgRect.top - captchaRect.top;
+            const posX = (leftDistance * 100) / scalingFactor;
+            const posY = (topDistance * 100) / scalingFactor;
+            console.log("Distance from left of captcha-inner: (X) ", posX);
+            console.log("Distance from top of captcha-inner: (Y) ", posY);
+        }
     });
 };
 const control = () => {

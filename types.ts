@@ -1,12 +1,16 @@
 export type HandshakeIn = {
   account: string;
-  network: string;
+  network: number;
   destination: string;
 };
 
 export type HandshakeResult = HandshakeIn & {
   timestamp: number;
   signature: string;
+};
+
+export type HandshakeResultWithMessage = HandshakeResult & {
+  message: string;
 };
 
 export type SignedMessage = {
