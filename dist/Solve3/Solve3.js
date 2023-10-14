@@ -21,6 +21,10 @@ class Solve3 extends events_1.EventEmitter {
         super();
         this.logger = new Logger_1.default(true);
         this.modal = new Modal_1.default();
+        this.modal.on("dragend", (solution) => {
+            console.log("solution emitted", solution);
+            this.handleSolutionEmitted(solution);
+        });
     }
     // return value needs to be signed
     init(handshakeIn) {
@@ -38,13 +42,34 @@ class Solve3 extends events_1.EventEmitter {
             if (!this._handshakeIn) {
                 throw new Error("Solve3 not initialized");
             }
-            const handshakeResult = Object.assign(Object.assign({}, this._handshakeIn), { timestamp: (_a = this._handshakeResult) === null || _a === void 0 ? void 0 : _a.timestamp, signature: signature });
-            // if (!HandshakeResult) {
-            //   throw new Error("HandshakeResult not found");
-            // }
+            if (!signature) {
+                throw new Error("No Signature provided");
+            }
+            this._signedHandshake = Object.assign(Object.assign({}, this._handshakeIn), { timestamp: (_a = this._handshakeResult) === null || _a === void 0 ? void 0 : _a.timestamp, signature: signature });
+            yield this.createModal();
             this.logger.debug("open");
-            const signedCaptcha = yield (0, api_1.requestCaptcha)(handshakeResult);
-            this.modal.create(signedCaptcha);
+        });
+    }
+    createModal() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this._signedHandshake) {
+                this._signedCaptcha = yield (0, api_1.requestCaptcha)(this._signedHandshake);
+                this.modal.create(this._signedCaptcha);
+            }
+        });
+    }
+    handleSolutionEmitted(solution) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const proof = yield (0, api_1.requestProof)(Object.assign(Object.assign({}, this._signedCaptcha), { posX: solution.posX, posY: solution.posY }));
+            if (proof) {
+                this.emit("success", proof);
+                console.log("proof: ", proof);
+            }
+            else {
+                this.emit("failed", "Proof is null");
+                console.log("proof is null");
+                this.createModal();
+            }
         });
     }
 }

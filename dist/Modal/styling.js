@@ -125,7 +125,7 @@ const innerDivStyle = {
 };
 exports.innerDivStyle = innerDivStyle;
 const segmentImageStyle = {
-    border: "1px solid rgb(255,255,255,0.6)",
+    border: "1px solid rgb(255,255,255,0.4)",
     position: "absolute",
     bottom: "5px",
     left: "5px",

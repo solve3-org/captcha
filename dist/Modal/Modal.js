@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const events_1 = __importDefault(require("events"));
 const Logger_1 = __importDefault(require("../Logger/Logger"));
 const handler_1 = require("./handler");
 const styling_1 = require("./styling");
@@ -10,10 +11,12 @@ const styling_1 = require("./styling");
 const id = (text) => {
     return `s3-solve3-modal-${text}`;
 };
-class Modal {
+class Modal extends events_1.default {
     constructor() {
+        super();
         this.logger = new Logger_1.default(true);
         this.modal = null;
+        this.emitter = this.emit.bind(this);
         // inject html into the target page
         document.body.insertAdjacentHTML("beforeend", `<div id='${id("module")}'></div>`);
         // get the modal element
@@ -43,7 +46,6 @@ class Modal {
         });
     }
     create(signedCaptcha) {
-        // Styling variables
         // Create outer modal div
         const modalDiv = document.createElement("div");
         Object.assign(modalDiv.style, styling_1.centered, styling_1.outerDivStyle, styling_1.maxSize, styling_1.boxShadow);
@@ -55,7 +57,7 @@ class Modal {
             throw new Error("Modal element not found");
         }
         this.modal.innerHTML = modalDiv.outerHTML;
-        handleSegmentImage(signedCaptcha);
+        handleSegmentImage(this.emitter, signedCaptcha);
     }
 }
 exports.default = Modal;
@@ -107,7 +109,7 @@ const modalBody = (signedCaptcha) => {
     innerWrapperDiv.appendChild(innerDiv);
     return innerWrapperDiv;
 };
-const handleSegmentImage = (signedCaptcha) => {
+const handleSegmentImage = (emitter, signedCaptcha) => {
     const captcha = document.getElementById(`${id("captcha-inner")}`);
     let scale = 100;
     if (captcha) {
@@ -129,7 +131,7 @@ const handleSegmentImage = (signedCaptcha) => {
                 // Make the imgElement draggable
                 imgElement.draggable = true;
                 // Set up drag-and-drop events
-                setupDragAndDrop(scale, imgElement, captcha);
+                setupDragAndDrop(emitter, scale, imgElement, captcha);
             };
         };
     }
@@ -139,11 +141,11 @@ const createImageElement = (width, height, src) => {
     Object.assign(imgElement.style, styling_1.segmentImageStyle, styling_1.pointer);
     imgElement.id = id("segmentImage");
     imgElement.src = src;
-    imgElement.style.width = `${width - 2}px`;
-    imgElement.style.height = `${height - 2}px`;
+    imgElement.style.width = `${width}px`;
+    imgElement.style.height = `${height}px`;
     return imgElement;
 };
-const setupDragAndDrop = (scalingFactor, imgElement, captcha) => {
+const setupDragAndDrop = (emitter, scalingFactor, imgElement, captcha) => {
     const captchaInner = document.getElementById(`${id("captcha-inner")}`);
     let initialX = 0;
     let initialY = 0;
@@ -153,7 +155,6 @@ const setupDragAndDrop = (scalingFactor, imgElement, captcha) => {
         if (event.dataTransfer) {
             initialX = event.clientX - imgElement.getBoundingClientRect().left;
             initialY = event.clientY - imgElement.getBoundingClientRect().top;
-            console.log("Drag started");
         }
     });
     let offsetX = 0;
@@ -165,7 +166,6 @@ const setupDragAndDrop = (scalingFactor, imgElement, captcha) => {
         offsetY = event.clientY - initialY - captcha.getBoundingClientRect().top;
         imgElement.style.left = `${offsetX}px`;
         imgElement.style.top = `${offsetY}px`;
-        console.log("Dragging at position: ", offsetX, offsetY);
     });
     imgElement.addEventListener("dragend", () => {
         imgElement.style.left = `${previousX}px`;
@@ -177,8 +177,7 @@ const setupDragAndDrop = (scalingFactor, imgElement, captcha) => {
             const topDistance = imgRect.top - captchaRect.top;
             const posX = (leftDistance * 100) / scalingFactor;
             const posY = (topDistance * 100) / scalingFactor;
-            console.log("Distance from left of captcha-inner: (X) ", posX);
-            console.log("Distance from top of captcha-inner: (Y) ", posY);
+            emitter("dragend", { posX, posY });
         }
     });
 };

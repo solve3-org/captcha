@@ -35,7 +35,6 @@ export type RawCaptcha = {
 export type BaseCaptcha = {
   image: string;
   segment: string;
-  position: number;
   magicToken: string; // Secret
 };
 
@@ -44,7 +43,8 @@ export type SignedCaptcha = BaseCaptcha & {
 };
 
 export type SolvedCaptcha = SignedCaptcha & {
-  solution: number;
+  posX: number;
+  posY: number;
 };
 
 export type ProofData = {
@@ -73,4 +73,9 @@ export type TypedData = {
   message: ProofData;
   primaryType: string;
   types: any;
+};
+
+export type Positions = {
+  posX: number;
+  posY: number;
 };

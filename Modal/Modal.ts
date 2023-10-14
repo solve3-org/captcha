@@ -1,3 +1,4 @@
+import EventEmitter from "events";
 import Logger from "../Logger/Logger";
 import { SignedCaptcha } from "../types";
 import { changeInnerDivColor } from "./handler";
@@ -25,11 +26,13 @@ const id = (text: string): string => {
   return `s3-solve3-modal-${text}`;
 };
 
-export default class Modal {
+export default class Modal extends EventEmitter {
   logger = new Logger(true);
   modal: HTMLElement | null = null;
+  emitter = this.emit.bind(this);
 
   constructor() {
+    super();
     // inject html into the target page
     document.body.insertAdjacentHTML(
       "beforeend",
@@ -67,8 +70,6 @@ export default class Modal {
   }
 
   public create(signedCaptcha: SignedCaptcha) {
-    // Styling variables
-
     // Create outer modal div
     const modalDiv = document.createElement("div");
     Object.assign(modalDiv.style, centered, outerDivStyle, maxSize, boxShadow);
@@ -84,7 +85,7 @@ export default class Modal {
 
     this.modal!.innerHTML = modalDiv.outerHTML;
 
-    handleSegmentImage(signedCaptcha);
+    handleSegmentImage(this.emitter, signedCaptcha);
   }
 }
 
@@ -160,7 +161,10 @@ const modalBody = (signedCaptcha: SignedCaptcha): HTMLElement => {
   return innerWrapperDiv;
 };
 
-const handleSegmentImage = (signedCaptcha: SignedCaptcha): number => {
+const handleSegmentImage = (
+  emitter: any,
+  signedCaptcha: SignedCaptcha,
+): void => {
   const captcha = document.getElementById(`${id("captcha-inner")}`);
   let scale = 100;
   if (captcha) {
@@ -192,7 +196,7 @@ const handleSegmentImage = (signedCaptcha: SignedCaptcha): number => {
         imgElement.draggable = true;
 
         // Set up drag-and-drop events
-        setupDragAndDrop(scale, imgElement, captcha);
+        setupDragAndDrop(emitter, scale, imgElement, captcha);
       };
     };
   }
@@ -207,13 +211,14 @@ const createImageElement = (
   Object.assign(imgElement.style, segmentImageStyle, pointer);
   imgElement.id = id("segmentImage");
   imgElement.src = src;
-  imgElement.style.width = `${width - 2}px`;
-  imgElement.style.height = `${height - 2}px`;
+  imgElement.style.width = `${width}px`;
+  imgElement.style.height = `${height}px`;
 
   return imgElement;
 };
 
 const setupDragAndDrop = (
+  emitter: any,
   scalingFactor: number,
   imgElement: HTMLImageElement,
   captcha: HTMLElement,
@@ -230,7 +235,6 @@ const setupDragAndDrop = (
     if (event.dataTransfer) {
       initialX = event.clientX - imgElement.getBoundingClientRect().left;
       initialY = event.clientY - imgElement.getBoundingClientRect().top;
-      console.log("Drag started");
     }
   });
 
@@ -246,8 +250,6 @@ const setupDragAndDrop = (
 
     imgElement.style.left = `${offsetX}px`;
     imgElement.style.top = `${offsetY}px`;
-
-    console.log("Dragging at position: ", offsetX, offsetY);
   });
 
   imgElement.addEventListener("dragend", () => {
@@ -264,8 +266,7 @@ const setupDragAndDrop = (
       const posX = (leftDistance * 100) / scalingFactor;
       const posY = (topDistance * 100) / scalingFactor;
 
-      console.log("Distance from left of captcha-inner: (X) ", posX);
-      console.log("Distance from top of captcha-inner: (Y) ", posY);
+      emitter("dragend", { posX, posY });
     }
   });
 };

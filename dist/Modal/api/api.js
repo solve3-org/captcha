@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.requestProof = exports.requestCaptcha = exports.handshake = void 0;
+// @ts-ignore
 const config_1 = require("./config");
 const fetchApi = (method, body) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield fetch(`${config_1.API_URL}/${method}`, {
@@ -33,8 +34,14 @@ const requestCaptcha = (handshakeResult) => __awaiter(void 0, void 0, void 0, fu
     return yield fetchApi("requestCaptcha", handshakeResult);
 });
 exports.requestCaptcha = requestCaptcha;
-const requestProof = (solvedCaptcha) => {
-    console.log("requestProof");
-    return "";
-};
+const requestProof = (solvedCaptcha) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const proof = yield fetchApi("requestProof", solvedCaptcha);
+        return proof;
+    }
+    catch (_a) {
+        console.log("catched error");
+        return null;
+    }
+});
 exports.requestProof = requestProof;

@@ -6,7 +6,6 @@ import {
   SolvedCaptcha,
 } from "../../types";
 // @ts-ignore
-import dummySignedCaptcha from "./signedCaptcha.json";
 import { API_URL } from "./config";
 
 const fetchApi = async (method: string, body: any) => {
@@ -38,7 +37,14 @@ export const requestCaptcha = async (
   return await fetchApi("requestCaptcha", handshakeResult);
 };
 
-export const requestProof = (solvedCaptcha: SolvedCaptcha): String => {
-  console.log("requestProof");
-  return "";
+export const requestProof = async (
+  solvedCaptcha: SolvedCaptcha,
+): Promise<String | null> => {
+  try {
+    const proof = await fetchApi("requestProof", solvedCaptcha);
+    return proof;
+  } catch {
+    console.log("catched error");
+    return null;
+  }
 };
