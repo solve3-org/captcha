@@ -69,7 +69,35 @@ export default class Modal extends EventEmitter {
       });
   }
 
+  // Method to close the modal
+  public close() {
+    document.removeEventListener("click", this.closeIfOutsideModal.bind(this));
+
+    if (this.modal) {
+      this.emitter("close");
+      this.modal.remove(); // Remove the modal from the DOM
+      this.modal = null; // Reset the modal reference
+    }
+  }
+
+  // Method to check if the click event occurred outside the modal
+  private closeIfOutsideModal(event: MouseEvent) {
+    if (
+      this.modal &&
+      event.target !== this.modal &&
+      !this.modal.contains(event.target as Node)
+    ) {
+      // If the click is outside the modal, close it
+      this.close();
+    }
+  }
+
   public create(signedCaptcha: SignedCaptcha) {
+    // Close the previous modal if it exists
+    this.close();
+
+    document.addEventListener("click", this.closeIfOutsideModal.bind(this));
+
     // Create outer modal div
     const modalDiv = document.createElement("div");
     Object.assign(modalDiv.style, centered, outerDivStyle, maxSize, boxShadow);
@@ -79,10 +107,16 @@ export default class Modal extends EventEmitter {
     // modalDiv.appendChild(control());
     modalDiv.appendChild(brandContainer());
 
+    // If the modal element is not found, create it
     if (!this.modal) {
-      throw new Error("Modal element not found");
+      document.body.insertAdjacentHTML(
+        "beforeend",
+        `<div id='${id("module")}'></div>`,
+      );
+      this.modal = document.getElementById(`${id("module")}`);
     }
 
+    // Set the modal content
     this.modal!.innerHTML = modalDiv.outerHTML;
 
     handleSegmentImage(this.emitter, signedCaptcha);
