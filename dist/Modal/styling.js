@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.segmentImageStyle = exports.pointer = exports.innerDivStyle = exports.innerWrapperDivStyle = exports.closeButtonStyle = exports.brandContainerStyle = exports.brandNameSecondLine = exports.brandNameFirstLine = exports.brandNameWrapper = exports.brandLogoSize = exports.padding5 = exports.flexCenter = exports.boxShadowBold = exports.boxShadow = exports.outerDivStyle = exports.centered = exports.maxSize = void 0;
+exports.square = exports.squareContainer = exports.fontDark = exports.segmentImageStyle = exports.pointer = exports.innerDivStyle = exports.innerWrapperDivStyle = exports.closeButtonStyle = exports.actionContainerStyle = exports.brandNameSecondLine = exports.brandNameFirstLine = exports.brandNameWrapper = exports.brandLogoSize = exports.padding5 = exports.flexCenter = exports.boxShadowBold = exports.boxShadow = exports.sessionExpiredDivStyle = exports.outerDivStyle = exports.centered = exports.maxSize = void 0;
 const maxSize = {
     width: "350px",
-    height: "450px",
 };
 exports.maxSize = maxSize;
 const centered = {
@@ -14,20 +13,30 @@ const centered = {
 };
 exports.centered = centered;
 const outerDivStyle = {
-    // ad33cc, 320b40, #441953
-    // background: `linear-gradient(180deg, #441953 0%, #320b40 66%, #320b40 66%, #320b40 100%)`,
-    backgroundColor: "rgba(50, 11, 64, 0.99)",
-    background: `linear-gradient(180deg, #ad33cc 0%, #320b40 100%)`,
-    // background: `linear-gradient(180deg, rgba(173, 51, 204, 0.5) 0%, rgba(50, 11, 64, 0.99) 100%)`,
-    // background: "#333",
+    backgroundColor: "#000000",
+    background: `linear-gradient(180deg, #f9f9f9 50%, #adadad 100%)`,
     border: "1px solid #320b40",
     borderRadius: "7px",
     padding: "5px 5px 5px 5px",
     boxSizing: "border-box",
     color: "lightgrey",
-    display: "flex-box",
+    display: "flex",
+    flexDirection: "column",
 };
 exports.outerDivStyle = outerDivStyle;
+const sessionExpiredDivStyle = {
+    background: "rgba(0, 0, 0, 0.4)",
+    width: "100%",
+    height: "100%",
+    color: "white",
+    zIndex: 10001,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: "7px",
+};
+exports.sessionExpiredDivStyle = sessionExpiredDivStyle;
 const boxShadow = {
     boxShadow: "0px 0px 7px rgba(0, 0, 0, 0.2)",
 };
@@ -40,6 +49,7 @@ const flexCenter = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    textAlign: "center",
 };
 exports.flexCenter = flexCenter;
 const padding5 = {
@@ -50,8 +60,6 @@ const brandLogoSize = {
     height: "30px",
     marginRight: "5px",
     marginLeft: "5px",
-    // marginBottom: "5px",
-    // marginTop: "5px",
 };
 exports.brandLogoSize = brandLogoSize;
 const brandNameWrapper = {
@@ -69,30 +77,40 @@ const brandNameFirstLine = {
 };
 exports.brandNameFirstLine = brandNameFirstLine;
 const brandNameSecondLine = {
+    color: "gray",
     fontSize: "0.7rem",
     fontWeight: "600",
     opacity: "0.8",
     letterSpacing: "0.05rem",
 };
 exports.brandNameSecondLine = brandNameSecondLine;
-const brandContainerStyle = {
-    display: "flex",
-    justifyContent: "flex-end",
-    marginTop: "auto",
-    // alignItems: "center",
-    position: "absolute",
+const actionContainerStyle = {
+    margin: "auto",
     bottom: "5px",
     left: "0",
     right: "0",
 };
-exports.brandContainerStyle = brandContainerStyle;
+exports.actionContainerStyle = actionContainerStyle;
 const pointer = {
     cursor: "pointer",
 };
 exports.pointer = pointer;
 const closeButtonStyle = {
-    border: "none",
     background: "none",
+    color: "lightgrey",
+    fontSize: "1rem",
+    fontWeight: "bold",
+    // Set the width and height to create a circular button
+    width: "30px",
+    height: "30px",
+    borderRadius: "50%",
+    padding: "0",
+    boxSizing: "border-box",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    // border color
+    border: "2px solid lightgrey",
 };
 exports.closeButtonStyle = closeButtonStyle;
 const innerWrapperDivStyle = {
@@ -104,8 +122,6 @@ const innerWrapperDivStyle = {
     outline: "none",
     padding: "5px",
     boxSizing: "border-box",
-    display: "flex",
-    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center", // Center vertically
 };
@@ -131,3 +147,26 @@ const segmentImageStyle = {
     left: "5px",
 };
 exports.segmentImageStyle = segmentImageStyle;
+const fontDark = {
+    color: "#6e6e6e",
+};
+exports.fontDark = fontDark;
+const squareContainer = {
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    marginTop: "auto",
+    marginLeft: "auto",
+};
+exports.squareContainer = squareContainer;
+const square = {
+    width: "20px",
+    height: "20px",
+    padding: "2px",
+    justifyContent: "center",
+    opacity: "0.7",
+    // marginLeft: "5px",
+    marginRight: "2px",
+    zIndex: 10000,
+};
+exports.square = square;

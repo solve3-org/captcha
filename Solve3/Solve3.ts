@@ -2,6 +2,7 @@ import { EventEmitter } from "events";
 import Logger from "../Logger/Logger";
 import Modal from "../Modal/Modal";
 import {
+  ErrorCode,
   HandshakeIn,
   HandshakeResult,
   HandshakeResultWithMessage,
@@ -22,10 +23,15 @@ export default class Solve3 extends EventEmitter {
 
   constructor() {
     super();
-    this.modal.on("dragend", (solution: Positions) => {
-      console.log("solution emitted", solution);
-      this.handleSolutionEmitted(solution);
-    });
+    this.modal
+      .on("dragend", (solution: Positions) => {
+        this.logger.debug("solution emitted " + solution);
+        this.handleSolutionEmitted(solution);
+      })
+      .on("refresh", () => {
+        this.logger.debug("refresh");
+        this.createModal();
+      });
   }
 
   // return value needs to be signed
@@ -63,8 +69,16 @@ export default class Solve3 extends EventEmitter {
 
   private async createModal() {
     if (this._signedHandshake) {
-      this._signedCaptcha = await requestCaptcha(this._signedHandshake);
+      const result = await requestCaptcha(this._signedHandshake);
 
+      if (result === ErrorCode.SESSION_EXPIRED) {
+        this.emit("expired", "Session expired");
+        this.modal.sessionExpired();
+        console.log("session expired");
+        return;
+      } else {
+        this._signedCaptcha = result as SignedCaptcha;
+      }
       this.modal.create(this._signedCaptcha);
     }
   }
@@ -75,13 +89,17 @@ export default class Solve3 extends EventEmitter {
       posX: solution.posX,
       posY: solution.posY,
     });
-    if (proof) {
-      this.emit("success", proof);
-      console.log("proof: ", proof);
-    } else {
+    if (proof === ErrorCode.SESSION_EXPIRED) {
+      this.emit("expired", "Session expired");
+      this.modal.sessionExpired();
+      console.log("session expired");
+    } else if (proof === ErrorCode.INVALID_SOLUTION) {
       this.emit("failed", "Proof is null");
       console.log("proof is null");
       this.createModal();
+    } else {
+      this.emit("success", proof);
+      console.log("proof: ", proof);
     }
   }
 }

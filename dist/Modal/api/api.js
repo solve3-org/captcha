@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.requestProof = exports.requestCaptcha = exports.handshake = void 0;
+const types_1 = require("../../types");
 // @ts-ignore
 const config_1 = require("./config");
 const fetchApi = (method, body) => __awaiter(void 0, void 0, void 0, function* () {
@@ -20,28 +21,36 @@ const fetchApi = (method, body) => __awaiter(void 0, void 0, void 0, function* (
         },
         body: JSON.stringify(body), // Convert the object to JSON
     });
-    if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-    }
     // Parse and return the response as JSON
     return response.json();
 });
 const handshake = (handshakeIn) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield fetchApi("handshake", handshakeIn);
+    const result = yield fetchApi("handshake", handshakeIn);
+    if (result.error) {
+        throw new Error(result.errors[0].msg);
+    }
+    return result;
 });
 exports.handshake = handshake;
 const requestCaptcha = (handshakeResult) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield fetchApi("requestCaptcha", handshakeResult);
+    const result = yield fetchApi("requestCaptcha", handshakeResult);
+    if (result.error) {
+        if (result.error.code === types_1.ErrorCode.SESSION_EXPIRED) {
+            return result.error.code;
+        }
+        throw new Error(result.error.message);
+    }
+    return result;
 });
 exports.requestCaptcha = requestCaptcha;
 const requestProof = (solvedCaptcha) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const proof = yield fetchApi("requestProof", solvedCaptcha);
-        return proof;
+    const result = yield fetchApi("requestProof", solvedCaptcha);
+    if (result.error) {
+        if (result.error.code === types_1.ErrorCode.SESSION_EXPIRED) {
+            return result.error.code;
+        }
+        return types_1.ErrorCode.INVALID_SOLUTION;
     }
-    catch (_a) {
-        console.log("catched error");
-        return null;
-    }
+    return result;
 });
 exports.requestProof = requestProof;

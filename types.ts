@@ -79,3 +79,14 @@ export type Positions = {
   posX: number;
   posY: number;
 };
+
+export enum ErrorCode {
+  NONE,
+  INVALID_INPUT,
+  UNSUPPORTED_NETWORK,
+  INVALID_SIGNATURE,
+  INVALID_SIGNATURE_STRING,
+  SESSION_EXPIRED,
+  INVALID_REQUEST,
+  INVALID_SOLUTION,
+}

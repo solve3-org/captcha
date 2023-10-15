@@ -15,15 +15,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const events_1 = require("events");
 const Logger_1 = __importDefault(require("../Logger/Logger"));
 const Modal_1 = __importDefault(require("../Modal/Modal"));
+const types_1 = require("../types");
 const api_1 = require("../Modal/api/api");
 class Solve3 extends events_1.EventEmitter {
     constructor() {
         super();
         this.logger = new Logger_1.default(true);
         this.modal = new Modal_1.default();
-        this.modal.on("dragend", (solution) => {
-            console.log("solution emitted", solution);
+        this.modal
+            .on("dragend", (solution) => {
+            this.logger.debug("solution emitted " + solution);
             this.handleSolutionEmitted(solution);
+        })
+            .on("refresh", () => {
+            this.logger.debug("refresh");
+            this.createModal();
         });
     }
     // return value needs to be signed
@@ -53,7 +59,16 @@ class Solve3 extends events_1.EventEmitter {
     createModal() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._signedHandshake) {
-                this._signedCaptcha = yield (0, api_1.requestCaptcha)(this._signedHandshake);
+                const result = yield (0, api_1.requestCaptcha)(this._signedHandshake);
+                if (result === types_1.ErrorCode.SESSION_EXPIRED) {
+                    this.emit("expired", "Session expired");
+                    this.modal.sessionExpired();
+                    console.log("session expired");
+                    return;
+                }
+                else {
+                    this._signedCaptcha = result;
+                }
                 this.modal.create(this._signedCaptcha);
             }
         });
@@ -61,14 +76,19 @@ class Solve3 extends events_1.EventEmitter {
     handleSolutionEmitted(solution) {
         return __awaiter(this, void 0, void 0, function* () {
             const proof = yield (0, api_1.requestProof)(Object.assign(Object.assign({}, this._signedCaptcha), { posX: solution.posX, posY: solution.posY }));
-            if (proof) {
-                this.emit("success", proof);
-                console.log("proof: ", proof);
+            if (proof === types_1.ErrorCode.SESSION_EXPIRED) {
+                this.emit("expired", "Session expired");
+                this.modal.sessionExpired();
+                console.log("session expired");
             }
-            else {
+            else if (proof === types_1.ErrorCode.INVALID_SOLUTION) {
                 this.emit("failed", "Proof is null");
                 console.log("proof is null");
                 this.createModal();
+            }
+            else {
+                this.emit("success", proof);
+                console.log("proof: ", proof);
             }
         });
     }

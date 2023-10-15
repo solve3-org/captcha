@@ -1,4 +1,5 @@
 import {
+  ErrorCode,
   HandshakeIn,
   HandshakeResult,
   HandshakeResultWithMessage,
@@ -17,10 +18,6 @@ const fetchApi = async (method: string, body: any) => {
     body: JSON.stringify(body), // Convert the object to JSON
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-
   // Parse and return the response as JSON
   return response.json();
 };
@@ -28,23 +25,35 @@ const fetchApi = async (method: string, body: any) => {
 export const handshake = async (
   handshakeIn: HandshakeIn,
 ): Promise<HandshakeResultWithMessage> => {
-  return await fetchApi("handshake", handshakeIn);
+  const result = await fetchApi("handshake", handshakeIn);
+  if (result.error) {
+    throw new Error(result.errors[0].msg);
+  }
+  return result;
 };
 
 export const requestCaptcha = async (
   handshakeResult: HandshakeResult,
-): Promise<SignedCaptcha> => {
-  return await fetchApi("requestCaptcha", handshakeResult);
+): Promise<SignedCaptcha | ErrorCode> => {
+  const result = await fetchApi("requestCaptcha", handshakeResult);
+  if (result.error) {
+    if (result.error.code === ErrorCode.SESSION_EXPIRED) {
+      return result.error.code;
+    }
+    throw new Error(result.error.message);
+  }
+  return result;
 };
 
 export const requestProof = async (
   solvedCaptcha: SolvedCaptcha,
-): Promise<String | null> => {
-  try {
-    const proof = await fetchApi("requestProof", solvedCaptcha);
-    return proof;
-  } catch {
-    console.log("catched error");
-    return null;
+): Promise<String | ErrorCode> => {
+  const result = await fetchApi("requestProof", solvedCaptcha);
+  if (result.error) {
+    if (result.error.code === ErrorCode.SESSION_EXPIRED) {
+      return result.error.code;
+    }
+    return ErrorCode.INVALID_SOLUTION;
   }
+  return result;
 };
