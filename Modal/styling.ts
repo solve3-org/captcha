@@ -1,5 +1,6 @@
 const maxSize = {
   width: "350px",
+  maxWidth: "80vw",
 };
 
 const centered = {
@@ -44,7 +45,7 @@ const boxShadowBold = {
 
 const flexCenter = {
   display: "flex",
-  justifyContent: "space-between",
+  justifyContent: "center",
   alignItems: "center",
   textAlign: "center",
 };
@@ -60,7 +61,6 @@ const brandLogoSize = {
 };
 
 const brandNameWrapper = {
-  width: "100%",
   textAlign: "left",
   color: "lightgrey",
   marginLeft: "5px",
@@ -69,12 +69,13 @@ const brandNameWrapper = {
 const brandNameFirstLine = {
   fontSize: "0.8rem",
   fontWeight: "bold",
-  opacity: "0.8",
+  opacity: "0.9",
   letterSpacing: "0.03rem",
+  color: "#222",
 };
 
 const brandNameSecondLine = {
-  color: "gray",
+  color: "#222",
   fontSize: "0.7rem",
   fontWeight: "600",
   opacity: "0.8",
@@ -140,14 +141,14 @@ const innerDivStyle = {
 };
 
 const segmentImageStyle = {
-  border: "1px solid rgb(255,255,255,0.4)",
+  border: "1px solid rgb(255,255,255,0.6)",
   position: "absolute",
   bottom: "5px",
   left: "5px",
 };
 
-const fontDark = {
-  color: "#6e6e6e",
+const fontLight = {
+  color: "#555",
 };
 
 const squareContainer = {
@@ -159,14 +160,53 @@ const squareContainer = {
 };
 
 const square = {
-  width: "20px",
-  height: "20px",
+  width: "24px",
+  height: "24px",
   padding: "2px",
   justifyContent: "center",
   opacity: "0.7",
   // marginLeft: "5px",
   marginRight: "2px",
   zIndex: 10000,
+};
+
+const flexStart = {
+  display: "flex",
+  justifyContent: "flex-start",
+  alignItems: "flex-start",
+  marginTop: "auto",
+  marginRight: "auto",
+};
+
+const logo = {
+  display: "flex",
+  justifyContent: "flex-center",
+  alignItems: "flex-center",
+  marginTop: "auto",
+};
+
+const w100 = {
+  width: "100%",
+};
+
+const opacity75 = {
+  opacity: "0.75",
+};
+
+const circle = {
+  height: "34px",
+  width: "34px",
+  backgroundColor: "#ccc",
+  borderRadius: "50%",
+  display: "inline-block",
+  padding: "2px",
+  border: "1px solid #999",
+  // shadow
+  boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.3)",
+};
+
+const textAlignLeft = {
+  textAlign: "left",
 };
 
 // export all
@@ -189,7 +229,13 @@ export {
   innerDivStyle,
   pointer,
   segmentImageStyle,
-  fontDark,
+  fontLight,
   squareContainer,
   square,
+  flexStart,
+  w100,
+  opacity75,
+  logo,
+  circle,
+  textAlignLeft,
 };

@@ -6,3 +6,12 @@ export const deterministicJson = (data: any): string => {
   }
   return JSON.stringify(sortedData);
 };
+
+export const id = (text: string): string => {
+  return `s3-solve3-modal-${text}`;
+};
+
+export const convertAddressToShortString = (address: string) => {
+  if (!address.includes("0x")) return address;
+  return address.slice(0, 8) + "..." + address.slice(-6);
+};

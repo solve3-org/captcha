@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.square = exports.squareContainer = exports.fontDark = exports.segmentImageStyle = exports.pointer = exports.innerDivStyle = exports.innerWrapperDivStyle = exports.closeButtonStyle = exports.actionContainerStyle = exports.brandNameSecondLine = exports.brandNameFirstLine = exports.brandNameWrapper = exports.brandLogoSize = exports.padding5 = exports.flexCenter = exports.boxShadowBold = exports.boxShadow = exports.sessionExpiredDivStyle = exports.outerDivStyle = exports.centered = exports.maxSize = void 0;
+exports.textAlignLeft = exports.circle = exports.logo = exports.opacity75 = exports.w100 = exports.flexStart = exports.square = exports.squareContainer = exports.fontLight = exports.segmentImageStyle = exports.pointer = exports.innerDivStyle = exports.innerWrapperDivStyle = exports.closeButtonStyle = exports.actionContainerStyle = exports.brandNameSecondLine = exports.brandNameFirstLine = exports.brandNameWrapper = exports.brandLogoSize = exports.padding5 = exports.flexCenter = exports.boxShadowBold = exports.boxShadow = exports.sessionExpiredDivStyle = exports.outerDivStyle = exports.centered = exports.maxSize = void 0;
 const maxSize = {
     width: "350px",
+    maxWidth: "80vw",
 };
 exports.maxSize = maxSize;
 const centered = {
@@ -47,7 +48,7 @@ const boxShadowBold = {
 exports.boxShadowBold = boxShadowBold;
 const flexCenter = {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
 };
@@ -63,7 +64,6 @@ const brandLogoSize = {
 };
 exports.brandLogoSize = brandLogoSize;
 const brandNameWrapper = {
-    width: "100%",
     textAlign: "left",
     color: "lightgrey",
     marginLeft: "5px",
@@ -72,12 +72,13 @@ exports.brandNameWrapper = brandNameWrapper;
 const brandNameFirstLine = {
     fontSize: "0.8rem",
     fontWeight: "bold",
-    opacity: "0.8",
+    opacity: "0.9",
     letterSpacing: "0.03rem",
+    color: "#222",
 };
 exports.brandNameFirstLine = brandNameFirstLine;
 const brandNameSecondLine = {
-    color: "gray",
+    color: "#222",
     fontSize: "0.7rem",
     fontWeight: "600",
     opacity: "0.8",
@@ -141,16 +142,16 @@ const innerDivStyle = {
 };
 exports.innerDivStyle = innerDivStyle;
 const segmentImageStyle = {
-    border: "1px solid rgb(255,255,255,0.4)",
+    border: "1px solid rgb(255,255,255,0.6)",
     position: "absolute",
     bottom: "5px",
     left: "5px",
 };
 exports.segmentImageStyle = segmentImageStyle;
-const fontDark = {
-    color: "#6e6e6e",
+const fontLight = {
+    color: "#555",
 };
-exports.fontDark = fontDark;
+exports.fontLight = fontLight;
 const squareContainer = {
     display: "flex",
     justifyContent: "flex-end",
@@ -160,8 +161,8 @@ const squareContainer = {
 };
 exports.squareContainer = squareContainer;
 const square = {
-    width: "20px",
-    height: "20px",
+    width: "24px",
+    height: "24px",
     padding: "2px",
     justifyContent: "center",
     opacity: "0.7",
@@ -170,3 +171,42 @@ const square = {
     zIndex: 10000,
 };
 exports.square = square;
+const flexStart = {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    marginTop: "auto",
+    marginRight: "auto",
+};
+exports.flexStart = flexStart;
+const logo = {
+    display: "flex",
+    justifyContent: "flex-center",
+    alignItems: "flex-center",
+    marginTop: "auto",
+};
+exports.logo = logo;
+const w100 = {
+    width: "100%",
+};
+exports.w100 = w100;
+const opacity75 = {
+    opacity: "0.75",
+};
+exports.opacity75 = opacity75;
+const circle = {
+    height: "34px",
+    width: "34px",
+    backgroundColor: "#ccc",
+    borderRadius: "50%",
+    display: "inline-block",
+    padding: "2px",
+    border: "1px solid #999",
+    // shadow
+    boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.3)",
+};
+exports.circle = circle;
+const textAlignLeft = {
+    textAlign: "left",
+};
+exports.textAlignLeft = textAlignLeft;

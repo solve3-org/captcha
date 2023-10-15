@@ -69,7 +69,7 @@ class Solve3 extends events_1.EventEmitter {
                 else {
                     this._signedCaptcha = result;
                 }
-                this.modal.create(this._signedCaptcha);
+                this.modal.create(this._signedCaptcha, this._signedHandshake.account, this._signedHandshake.destination, this._signedHandshake.network);
             }
         });
     }
@@ -89,6 +89,7 @@ class Solve3 extends events_1.EventEmitter {
             else {
                 this.emit("success", proof);
                 console.log("proof: ", proof);
+                this.modal.close();
             }
         });
     }

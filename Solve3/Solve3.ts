@@ -8,7 +8,6 @@ import {
   HandshakeResultWithMessage,
   Positions,
   SignedCaptcha,
-  SolvedCaptcha,
 } from "../types";
 import { handshake, requestCaptcha, requestProof } from "../Modal/api/api";
 
@@ -79,7 +78,12 @@ export default class Solve3 extends EventEmitter {
       } else {
         this._signedCaptcha = result as SignedCaptcha;
       }
-      this.modal.create(this._signedCaptcha);
+      this.modal.create(
+        this._signedCaptcha,
+        this._signedHandshake.account,
+        this._signedHandshake.destination,
+        this._signedHandshake.network,
+      );
     }
   }
 
@@ -100,6 +104,7 @@ export default class Solve3 extends EventEmitter {
     } else {
       this.emit("success", proof);
       console.log("proof: ", proof);
+      this.modal.close();
     }
   }
 }
