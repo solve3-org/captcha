@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.textAlignLeft = exports.circle = exports.logo = exports.opacity75 = exports.w100 = exports.flexStart = exports.square = exports.squareContainer = exports.fontLight = exports.segmentImageStyle = exports.pointer = exports.innerDivStyle = exports.innerWrapperDivStyle = exports.closeButtonStyle = exports.actionContainerStyle = exports.brandNameSecondLine = exports.brandNameFirstLine = exports.brandNameWrapper = exports.brandLogoSize = exports.padding5 = exports.flexCenter = exports.boxShadowBold = exports.boxShadow = exports.sessionExpiredDivStyle = exports.outerDivStyle = exports.centered = exports.maxSize = void 0;
+exports.loadingOverlay = exports.loadingCircleStyle = exports.textAlignLeft = exports.circle = exports.logo = exports.opacity75 = exports.w100 = exports.flexStart = exports.square = exports.squareContainer = exports.fontLight = exports.segmentImageStyle = exports.pointer = exports.innerDivStyle = exports.innerWrapperDivStyle = exports.closeButtonStyle = exports.actionContainerStyle = exports.brandNameSecondLine = exports.brandNameFirstLine = exports.brandNameWrapper = exports.brandLogoSize = exports.padding5 = exports.flexCenter = exports.boxShadowBold = exports.boxShadow = exports.sessionExpiredDivStyle = exports.outerDivStyle = exports.centered = exports.maxSize = void 0;
 const maxSize = {
     width: "350px",
     maxWidth: "80vw",
@@ -210,3 +210,26 @@ const textAlignLeft = {
     textAlign: "left",
 };
 exports.textAlignLeft = textAlignLeft;
+const loadingCircleStyle = {
+    width: "20px",
+    height: "20px",
+    backgroundColor: "#adadad",
+    borderRadius: "50%",
+    margin: "0 10px",
+    animation: "solve3LoadingExpandAndContract 0.5s infinite",
+    animationDelay: "0.2s", // Delay each circle's animation
+};
+exports.loadingCircleStyle = loadingCircleStyle;
+const loadingOverlay = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "fixed",
+    top: "0",
+    left: "0",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: "11999",
+};
+exports.loadingOverlay = loadingOverlay;

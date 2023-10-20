@@ -1,4 +1,4 @@
-import { id } from "../utils";
+import { id } from "../../utils";
 
 export const setupDragAndDrop = (
   emitter: any,

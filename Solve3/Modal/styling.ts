@@ -151,7 +151,7 @@ const fontLight = {
   color: "#555",
 };
 
-const squareContainer = {
+const menuContainer = {
   display: "flex",
   justifyContent: "flex-end",
   alignItems: "flex-end",
@@ -159,7 +159,7 @@ const squareContainer = {
   marginLeft: "auto",
 };
 
-const square = {
+const miniBtn = {
   width: "24px",
   height: "24px",
   padding: "2px",
@@ -209,6 +209,30 @@ const textAlignLeft = {
   textAlign: "left",
 };
 
+const loadingCircleStyle = {
+  width: "20px",
+  height: "20px",
+  backgroundColor: "#adadad", // Blue color, you can change it
+  borderRadius: "50%",
+  margin: "0 10px", // Adjust the spacing between circles
+  animation: "solve3LoadingExpandAndContract 0.5s infinite",
+  animationDelay: "0.2s", // Delay each circle's animation
+};
+
+const loadingOverlay = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  position: "fixed",
+  top: "0",
+  left: "0",
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  zIndex: "11999",
+  borderRadius: "7px",
+};
+
 // export all
 export {
   maxSize,
@@ -230,12 +254,14 @@ export {
   pointer,
   segmentImageStyle,
   fontLight,
-  squareContainer,
-  square,
+  menuContainer,
+  miniBtn,
   flexStart,
   w100,
   opacity75,
   logo,
   circle,
   textAlignLeft,
+  loadingCircleStyle,
+  loadingOverlay,
 };

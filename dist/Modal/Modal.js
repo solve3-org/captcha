@@ -285,6 +285,13 @@ class Modal extends events_1.default {
             this.close();
         }
     }
+    loading() {
+        console.log("Loading man");
+        this.showLoadingOverlay();
+    }
+    stopLoading() {
+        this.hideLoadingOverlay();
+    }
     create(signedCaptcha, account, destination, chain) {
         // Close the previous modal if it exists
         this.close();
@@ -319,9 +326,16 @@ class Modal extends events_1.default {
         this.handleEventListener(account, destination);
     }
     sessionExpired() {
+        var _a, _b;
         // Create an outer modal div for the session expired screen
         const sessionExpiredDiv = document.createElement("div");
         Object.assign(sessionExpiredDiv.style, styles.sessionExpiredDivStyle, styles.centered, styles.maxSize, styles.boxShadow);
+        // get width and height of id("outer")
+        const width = (_a = document.getElementById(`${(0, utils_1.id)("outer")}`)) === null || _a === void 0 ? void 0 : _a.offsetWidth;
+        const height = (_b = document.getElementById(`${(0, utils_1.id)("outer")}`)) === null || _b === void 0 ? void 0 : _b.offsetHeight;
+        // set width and height
+        sessionExpiredDiv.style.width = `${width}px`;
+        sessionExpiredDiv.style.height = `${height}px`;
         // Create a close button
         const closeButton = document.createElement("button");
         closeButton.id = (0, utils_1.id)("close");
@@ -342,6 +356,42 @@ class Modal extends events_1.default {
         sessionExpiredDiv.appendChild(closeButton);
         // Set the session expired content
         this.modal.appendChild(sessionExpiredDiv);
+    }
+    showLoadingOverlay() {
+        const styleElement = document.createElement("style");
+        // Define the keyframes animation
+        styleElement.textContent = `
+      @keyframes solve3LoadingExpandAndContract {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+    `;
+        // Append the <style> element to the document's <head>
+        document.head.appendChild(styleElement);
+        // Create the loading overlay element
+        const loadingOverlay = document.createElement("div");
+        Object.assign(loadingOverlay.style, styles.loadingOverlay);
+        // Create and style three circles
+        for (let i = 0; i < 3; i++) {
+            const circle = document.createElement("div");
+            Object.assign(circle.style, styles.loadingCircleStyle);
+            loadingOverlay.appendChild(circle);
+        }
+        this.modal.appendChild(loadingOverlay);
+    }
+    hideLoadingOverlay() {
+        // Remove the loading overlay
+        const loadingOverlay = document.querySelector(".loading-overlay");
+        if (loadingOverlay && this.modal) {
+            this.modal.removeChild(loadingOverlay);
+        }
     }
 }
 exports.default = Modal;

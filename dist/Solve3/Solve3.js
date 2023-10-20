@@ -14,9 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const events_1 = require("events");
 const Logger_1 = __importDefault(require("../Logger/Logger"));
-const Modal_1 = __importDefault(require("../Modal/Modal"));
+const Modal_1 = __importDefault(require("./Modal/Modal"));
 const types_1 = require("../types");
-const api_1 = require("../Modal/api/api");
+const api_1 = require("./api/api");
 class Solve3 extends events_1.EventEmitter {
     constructor() {
         super();
@@ -24,6 +24,7 @@ class Solve3 extends events_1.EventEmitter {
         this.modal = new Modal_1.default();
         this.modal
             .on("dragend", (solution) => {
+            this.modal.startLoading();
             this.logger.debug("solution emitted " + solution);
             this.handleSolutionEmitted(solution);
         })
@@ -76,21 +77,25 @@ class Solve3 extends events_1.EventEmitter {
     handleSolutionEmitted(solution) {
         return __awaiter(this, void 0, void 0, function* () {
             const proof = yield (0, api_1.requestProof)(Object.assign(Object.assign({}, this._signedCaptcha), { posX: solution.posX, posY: solution.posY }));
-            if (proof === types_1.ErrorCode.SESSION_EXPIRED) {
-                this.emit("expired", "Session expired");
-                this.modal.sessionExpired();
-                console.log("session expired");
-            }
-            else if (proof === types_1.ErrorCode.INVALID_SOLUTION) {
-                this.emit("failed", "Proof is null");
-                console.log("proof is null");
-                this.createModal();
-            }
-            else {
-                this.emit("success", proof);
-                console.log("proof: ", proof);
-                this.modal.close();
-            }
+            setTimeout(() => {
+                if (proof === types_1.ErrorCode.SESSION_EXPIRED ||
+                    proof === types_1.ErrorCode.INVALID_SIGNATURE) {
+                    this.emit("expired", "Session expired");
+                    this.modal.sessionExpired();
+                    console.log("session expired");
+                }
+                else if (!proof || proof === types_1.ErrorCode.INVALID_SOLUTION) {
+                    this.emit("failed", "Proof is null");
+                    console.log("proof is null");
+                    this.createModal();
+                }
+                else {
+                    this.emit("success", proof);
+                    console.log("proof: ", proof);
+                    this.modal.close();
+                }
+                this.modal.stopLoading();
+            }, 1500);
         });
     }
 }

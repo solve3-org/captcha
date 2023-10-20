@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import Logger from "../Logger/Logger";
-import Modal from "../Modal/Modal";
+import Modal from "./Modal/Modal";
 import {
   ErrorCode,
   HandshakeIn,
@@ -9,7 +9,7 @@ import {
   Positions,
   SignedCaptcha,
 } from "../types";
-import { handshake, requestCaptcha, requestProof } from "../Modal/api/api";
+import { handshake, requestCaptcha, requestProof } from "./api/api";
 
 export default class Solve3 extends EventEmitter {
   logger: Logger = new Logger(true);
@@ -24,6 +24,7 @@ export default class Solve3 extends EventEmitter {
     super();
     this.modal
       .on("dragend", (solution: Positions) => {
+        this.modal.startLoading();
         this.logger.debug("solution emitted " + solution);
         this.handleSolutionEmitted(solution);
       })
@@ -93,19 +94,25 @@ export default class Solve3 extends EventEmitter {
       posX: solution.posX,
       posY: solution.posY,
     });
-    if (proof === ErrorCode.SESSION_EXPIRED) {
-      this.emit("expired", "Session expired");
-      this.modal.sessionExpired();
-      console.log("session expired");
-    } else if (proof === ErrorCode.INVALID_SOLUTION) {
-      this.emit("failed", "Proof is null");
-      console.log("proof is null");
-      this.createModal();
-    } else {
-      this.emit("success", proof);
-      console.log("proof: ", proof);
-      this.modal.close();
-    }
+    setTimeout(() => {
+      if (
+        proof === ErrorCode.SESSION_EXPIRED ||
+        proof === ErrorCode.INVALID_SIGNATURE
+      ) {
+        this.emit("expired", "Session expired");
+        this.modal.sessionExpired();
+        console.log("session expired");
+      } else if (!proof || proof === ErrorCode.INVALID_SOLUTION) {
+        this.emit("failed", "Proof is null");
+        console.log("proof is null");
+        this.createModal();
+      } else {
+        this.emit("success", proof);
+        console.log("proof: ", proof);
+        this.modal.close();
+      }
+      this.modal.stopLoading();
+    }, 1500);
   }
 }
 
