@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "homepage": "https://solve3.org",
   "description": "Frontend integration for Solve3 smart contract bot protection",
-  "main": "index.js",
+  "main": "index.ts",
   "devDependencies": {
     "@types/events": "^3.0.0",
     "@types/node": "^20.5.8",
