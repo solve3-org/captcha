@@ -12,7 +12,7 @@ const centered = {
 
 const outerDivStyle = {
   backgroundColor: "#000000",
-  background: `linear-gradient(180deg, #f9f9f9 50%, #adadad 100%)`,
+  background: `linear-gradient(180deg, #fefefe 50%, #dddddd 100%)`,
   border: "1px solid #320b40",
   borderRadius: "7px",
   padding: "5px 5px 5px 5px",

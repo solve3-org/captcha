@@ -1,1 +1,1 @@
-export const API_URL: string = "http://localhost:6969";
+export const API_URL: string = "https://api.solve3.org";

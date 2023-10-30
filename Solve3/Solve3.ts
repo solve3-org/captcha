@@ -12,16 +12,18 @@ import {
 import { handshake, requestCaptcha, requestProof } from "./api/api";
 
 export default class Solve3 extends EventEmitter {
-  logger: Logger = new Logger(true);
+  logger: Logger = new Logger(false);
   modal: Modal = new Modal();
+  api: string | undefined;
 
   private _handshakeIn: HandshakeIn | undefined;
   private _handshakeResult: HandshakeResultWithMessage | undefined;
   private _signedHandshake: HandshakeResult | undefined;
   private _signedCaptcha: SignedCaptcha | undefined;
 
-  constructor() {
+  constructor(_api?: string) {
     super();
+    if (_api) this.api = _api;
     this.modal
       .on("dragend", (solution: Positions) => {
         this.modal.startLoading();
@@ -41,6 +43,7 @@ export default class Solve3 extends EventEmitter {
     // check if account and destination are valid addresses
     const handshakeResult: HandshakeResultWithMessage = await handshake(
       handshakeIn,
+      this.api,
     );
 
     this._handshakeResult = handshakeResult;
@@ -69,7 +72,7 @@ export default class Solve3 extends EventEmitter {
 
   private async createModal() {
     if (this._signedHandshake) {
-      const result = await requestCaptcha(this._signedHandshake);
+      const result = await requestCaptcha(this._signedHandshake, this.api);
 
       if (result === ErrorCode.SESSION_EXPIRED) {
         this.emit("expired", "Session expired");
@@ -89,11 +92,14 @@ export default class Solve3 extends EventEmitter {
   }
 
   private async handleSolutionEmitted(solution: Positions) {
-    const proof = await requestProof({
-      ...this._signedCaptcha!,
-      posX: solution.posX,
-      posY: solution.posY,
-    });
+    const proof = await requestProof(
+      {
+        ...this._signedCaptcha!,
+        posX: solution.posX,
+        posY: solution.posY,
+      },
+      this.api,
+    );
     setTimeout(() => {
       if (
         proof === ErrorCode.SESSION_EXPIRED ||
@@ -115,24 +121,3 @@ export default class Solve3 extends EventEmitter {
     }, 1500);
   }
 }
-
-// const openPopup = async () => {
-//   solve3
-//     .on("success", async (message) => {
-//       sendTx(message);
-//     })
-//     .on("error", async (err) => {
-//       console.log("error: ", err);
-//     });
-
-//   const handshake = await solve3.init({
-//     account: account,
-//     contract: "0xa70783A4EA4fEE1C121864146049736D11105755",
-//     network: "mumbai",
-//   });
-//   console.log("address: ", props.address);
-//   console.log("handshake: ", handshake);
-//   web3.eth.sign(handshake, account).then((msg) => {
-//     solve3.open(msg);
-//   });
-// };
