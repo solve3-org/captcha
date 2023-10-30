@@ -39,7 +39,7 @@ solve3.on("success", async (proof) => {
 
 3. **Get the Message to Sign:**
 
-   Before sending a transaction, you'll need a message to sign. This message typically includes information like the user's wallet address, the destination contract, and the network ID (chain ID).
+   Before sending a transaction, you'll need a message to sign. This message typically includes the user's wallet address, the destination contract, and the network ID (chain ID).
 
    ```javascript
    const messageToSign = await solve3.init({
@@ -67,7 +67,7 @@ solve3.on("success", async (proof) => {
 
 ### Full Example using React.js and wagmi
 
-This React.js example initializes the Solve3 Captcha module, gets the message to sign, signs the message using wagmi, and opens the captcha challenge when the `Set Message`` button is clicked. Make sure to replace the placeholders with your actual values and Ethereum provider.
+This React.js example initializes the Solve3 Captcha module, gets the message to sign, signs the message using wagmi, and opens the captcha challenge when the `Set Message` button is clicked. Make sure to replace the placeholders with your actual values and Ethereum provider.
 
 ```javascript
 import { useState } from "react";
