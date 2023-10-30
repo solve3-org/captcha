@@ -1,16 +1,25 @@
 {
-  "name": "solve3-module",
+  "name": "@solve3/captcha",
   "version": "1.0.0",
+  "homepage": "https://solve3.org",
+  "description": "Frontend integration for Solve3 smart contract bot protection",
   "main": "index.js",
-  "license": "MIT",
   "devDependencies": {
     "@types/events": "^3.0.0",
     "@types/node": "^20.5.8",
-    "dotenv": "^16.3.1",
     "typescript": "^5.1.6"
   },
   "dependencies": {
     "events": "^3.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solve3-org/captcha.git"
+  },
+  "author": "Solve3.org",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/solve3-org/captcha/issues"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
