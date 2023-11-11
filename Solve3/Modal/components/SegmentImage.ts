@@ -48,7 +48,7 @@ export const SegmentImage = (
           signedCaptcha.segment,
         );
 
-        const dragDivHandle = DragDiv(segmentScaledWidth, segmentScaledHeight);
+        const dragDivHandle = DragDiv(segmentScaledWidth);
         captcha.appendChild(dragDivHandle);
         captcha.appendChild(imgElement); // Append the img element to innerDiv
         imgElement.draggable = true;
@@ -59,7 +59,7 @@ export const SegmentImage = (
   }
 };
 
-const DragDiv = (size: number, distance: number): HTMLDivElement => {
+const DragDiv = (size: number): HTMLDivElement => {
   const width = 25;
   const center = size / 2 - width / 2 + 4;
   const dragDiv = document.createElement("div");
@@ -103,16 +103,6 @@ const DragDiv = (size: number, distance: number): HTMLDivElement => {
     p.style.fontWeight = "200";
     p.style.opacity = "0.9";
     p.innerHTML = "⊜";
-    // p.innerHTML = "&#128907;";
-    // p.innerHTML = "&ocir;";
-    // p.innerHTML = "&#10294;";
-
-    //     const icon = `<svg fill="green" width="29px" height="29px" viewBox="-8.5 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-    // <title>arrows-alt</title>
-    // <path d="M13.76 18.48v0c-0.48 0-0.84 0.36-0.84 0.84v1.12l-4.4-4.4 4.4-4.4v1.12c0 0.48 0.36 0.84 0.84 0.84s0.84-0.36 0.84-0.84v-3.16c0-0.48-0.36-0.84-0.88-0.84v0h-3.16c-0.48 0-0.84 0.36-0.84 0.84s0.36 0.84 0.84 0.84h1.12l-4.4 4.4-4.4-4.4h1.16c0.48 0 0.84-0.36 0.84-0.84s-0.36-0.84-0.84-0.84h-3.16c-0.52 0-0.88 0.4-0.88 0.88v3.16c0 0.48 0.36 0.8 0.84 0.8v0c0.48 0 0.84-0.36 0.84-0.84v-1.12l4.4 4.4-4.4 4.4v-1.12c0-0.48-0.36-0.84-0.84-0.84-0.44-0.040-0.8 0.32-0.8 0.8v3.16c0 0.44 0.24 0.8 0.84 0.8h3.16c0.48 0 0.84-0.36 0.84-0.84s-0.36-0.8-0.84-0.8h-1.12l4.4-4.4 4.4 4.4h-1.12c-0.48 0-0.84 0.36-0.84 0.84s0.36 0.84 0.84 0.84h3.16c0.56 0 0.88-0.32 0.88-0.8v0-3.16c-0.040-0.48-0.44-0.84-0.88-0.84z"></path>
-    // </svg>`;
-
-    //     p.innerHTML = icon;
 
     handle.appendChild(pDrag);
     handle.appendChild(p);

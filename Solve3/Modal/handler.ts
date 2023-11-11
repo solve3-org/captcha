@@ -15,9 +15,6 @@ export const setupDragAndDrop = (
   let offsetX = 0;
   let offsetY = 0;
 
-  let imgHanldeDiffX = 0;
-  let imgHanldeDiffY = 0;
-
   let isDragging = false;
 
   const disableScrolling = () => {
@@ -38,20 +35,12 @@ export const setupDragAndDrop = (
       initialY =
         event.touches[0].clientY - imgElement.getBoundingClientRect().top;
 
-      imgHanldeDiffX =
-        event.touches[0].clientX - handle.getBoundingClientRect().left;
-      imgHanldeDiffY =
-        event.touches[0].clientY - handle.getBoundingClientRect().top;
-
       // hide handle
       handle.style.display = "none";
     } else {
       // For mouse events
       initialX = event.clientX - imgElement.getBoundingClientRect().left;
       initialY = event.clientY - imgElement.getBoundingClientRect().top;
-
-      imgHanldeDiffX = initialX - handle.getBoundingClientRect().left;
-      imgHanldeDiffY = initialY - handle.getBoundingClientRect().top;
 
       event.preventDefault(); // Prevent default drag and drop behavior
       handle.style.display = "none";

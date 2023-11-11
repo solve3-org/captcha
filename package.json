@@ -1,6 +1,6 @@
 {
   "name": "@solve3/captcha",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "homepage": "https://solve3.org",
   "description": "Frontend integration for Solve3 smart contract bot protection",
   "main": "index.ts",
