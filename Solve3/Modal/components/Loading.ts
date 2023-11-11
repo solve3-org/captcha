@@ -30,7 +30,6 @@ export const LoadingOverlay = (): HTMLElement => {
     styles.loadingOverlay,
     styles.centered,
     styles.maxSize,
-    styles.boxShadow,
   );
 
   // get width and height of id("outer")

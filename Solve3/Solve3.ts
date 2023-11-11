@@ -100,7 +100,7 @@ export default class Solve3 extends EventEmitter {
       },
       this.api,
     );
-    setTimeout(() => {
+    setTimeout(async () => {
       if (
         proof === ErrorCode.SESSION_EXPIRED ||
         proof === ErrorCode.INVALID_SIGNATURE
@@ -111,7 +111,7 @@ export default class Solve3 extends EventEmitter {
       } else if (!proof || proof === ErrorCode.INVALID_SOLUTION) {
         this.emit("failed", "Proof is null");
         console.log("proof is null");
-        this.createModal();
+        await this.createModal();
       } else {
         this.emit("success", proof);
         console.log("proof: ", proof);

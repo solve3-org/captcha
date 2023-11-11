@@ -26,6 +26,8 @@ export const setupDragAndDrop = (
 
   const startDrag = (event: any) => {
     if (event.touches) {
+      event.preventDefault(); // Prevent default touch behavior
+      disableScrolling();
       // For touch devices
       initialX =
         event.touches[0].clientX - imgElement.getBoundingClientRect().left;
@@ -38,10 +40,10 @@ export const setupDragAndDrop = (
       event.preventDefault(); // Prevent default drag and drop behavior
     }
     isDragging = true;
-    disableScrolling();
   };
 
   const doDrag = (event: any) => {
+    event.preventDefault();
     if (isDragging) {
       if (event.touches) {
         // For touch devices
