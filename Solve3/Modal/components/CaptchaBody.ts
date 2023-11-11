@@ -15,6 +15,11 @@ export const CaptchaBody = (signedCaptcha: SignedCaptcha): HTMLElement => {
   innerDiv.style.backgroundSize = "cover"; // To fit and cover the content
   innerDiv.style.backgroundPosition = "center"; // Center the background
 
+  // get z index of outer div and increase by 1
+  const zIndex = Number(
+    window.getComputedStyle(innerWrapperDiv).getPropertyValue("z-index"),
+  );
+  innerDiv.style.zIndex = `${zIndex + 1}`;
   innerWrapperDiv.appendChild(innerDiv);
 
   return innerWrapperDiv;

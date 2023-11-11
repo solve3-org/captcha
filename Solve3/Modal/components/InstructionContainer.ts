@@ -10,7 +10,7 @@ export const InstructionContainer = (): HTMLElement => {
   );
 
   const instruction = document.createElement("div");
-  instruction.textContent = "Drag the image to the correct position";
+  instruction.textContent = "Drag image to the correct position";
   Object.assign(
     instruction.style,
     styles.brandNameSecondLine,

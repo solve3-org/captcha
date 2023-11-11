@@ -79,7 +79,7 @@ const brandNameSecondLine = {
   fontSize: "0.7rem",
   fontWeight: "600",
   opacity: "0.8",
-  letterSpacing: "0.05rem",
+  letterSpacing: "0.02rem",
 };
 
 const actionContainerStyle = {
@@ -233,6 +233,10 @@ const loadingOverlay = {
   borderRadius: "7px",
 };
 
+const testBg = {
+  background: "green",
+};
+
 // export all
 export {
   maxSize,
@@ -264,4 +268,5 @@ export {
   textAlignLeft,
   loadingCircleStyle,
   loadingOverlay,
+  testBg,
 };

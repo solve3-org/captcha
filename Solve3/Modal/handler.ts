@@ -4,6 +4,7 @@ export const setupDragAndDrop = (
   emitter: any,
   scalingFactor: number,
   imgElement: HTMLImageElement,
+  handle: HTMLElement,
   captcha: HTMLElement,
 ) => {
   const captchaInner = document.getElementById(`${id("captcha-inner")}`);
@@ -13,6 +14,9 @@ export const setupDragAndDrop = (
 
   let offsetX = 0;
   let offsetY = 0;
+
+  let imgHanldeDiffX = 0;
+  let imgHanldeDiffY = 0;
 
   let isDragging = false;
 
@@ -33,11 +37,24 @@ export const setupDragAndDrop = (
         event.touches[0].clientX - imgElement.getBoundingClientRect().left;
       initialY =
         event.touches[0].clientY - imgElement.getBoundingClientRect().top;
+
+      imgHanldeDiffX =
+        event.touches[0].clientX - handle.getBoundingClientRect().left;
+      imgHanldeDiffY =
+        event.touches[0].clientY - handle.getBoundingClientRect().top;
+
+      // hide handle
+      handle.style.display = "none";
     } else {
       // For mouse events
       initialX = event.clientX - imgElement.getBoundingClientRect().left;
       initialY = event.clientY - imgElement.getBoundingClientRect().top;
+
+      imgHanldeDiffX = initialX - handle.getBoundingClientRect().left;
+      imgHanldeDiffY = initialY - handle.getBoundingClientRect().top;
+
       event.preventDefault(); // Prevent default drag and drop behavior
+      handle.style.display = "none";
     }
     isDragging = true;
   };
@@ -79,6 +96,7 @@ export const setupDragAndDrop = (
     if (isDragging) {
       imgElement.style.left = `${offsetX}px`;
       imgElement.style.top = `${offsetY}px`;
+
       isDragging = false;
 
       if (captchaInner) {
@@ -101,6 +119,9 @@ export const setupDragAndDrop = (
   // Add event listeners for both touch and mouse events
   imgElement.addEventListener("mousedown", startDrag);
   imgElement.addEventListener("touchstart", startDrag);
+
+  handle.addEventListener("mousedown", startDrag);
+  handle.addEventListener("touchstart", startDrag);
 
   document.addEventListener("mousemove", doDrag);
   document.addEventListener("touchmove", doDrag);
